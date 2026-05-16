@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DownKöprü — Down Sendromu Destek Platformu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1E3A8A;
+    --blue-light: #2348a8;
+    --blue-dark: #162d6e;
+    --yellow: #FBBF24;
+    --yellow-light: #FCD34D;
+    --yellow-dark: #D97706;
+    --bg: #F0F4FF;
+    --surface: #FFFFFF;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: rgba(30,58,138,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 24px rgba(30,58,138,0.10);
+    --shadow-lg: 0 8px 40px rgba(30,58,138,0.16);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1,h2,h3,h4 { font-family: 'Baloo 2', sans-serif; }
+
+  /* ── NAVBAR ─────────────────────────────── */
+  .navbar {
+    background: var(--blue);
+    position: sticky; top: 0; z-index: 200;
+    box-shadow: 0 2px 20px rgba(30,58,138,0.25);
+  }
+  .navbar-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex; align-items: center;
+    height: 68px; gap: 1rem;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .brand-logo {
+    width: 42px; height: 42px;
+    background: var(--yellow);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .brand-name {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 22px; font-weight: 800;
+    color: white; letter-spacing: -0.3px;
+  }
+  .brand-name span { color: var(--yellow); }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 2px;
+    flex: 1; margin-left: 1rem; flex-wrap: wrap;
+  }
+  .nav-link {
+    background: transparent; border: none;
+    color: rgba(255,255,255,0.75);
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+  .nav-link.active { background: rgba(251,191,36,0.2); color: var(--yellow); }
+  .nav-link .nav-icon { font-size: 17px; }
+  .family-sep { width: 1px; height: 28px; background: rgba(251,191,36,0.3); margin: 0 4px; flex-shrink: 0; }
+
+  .role-toggle {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(251,191,36,0.5);
+    border-radius: 30px; padding: 6px 14px;
+    cursor: pointer; transition: all 0.2s;
+    flex-shrink: 0; margin-left: auto;
+  }
+  .role-toggle:hover { background: rgba(255,255,255,0.14); }
+  .role-dot { width: 10px; height: 10px; border-radius: 50%; transition: background 0.3s; }
+  .role-text { color: var(--yellow); font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+  /* ── HAMBURGER ───────────────────────────── */
+  .hamburger {
+    display: none; background: none; border: none;
+    color: white; font-size: 26px; cursor: pointer;
+    margin-left: auto; flex-shrink: 0;
+  }
+  .mobile-menu {
+    display: none; flex-direction: column;
+    background: var(--blue-dark);
+    padding: 12px 1.5rem 1.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu .nav-link { justify-content: flex-start; border-radius: var(--radius-sm); }
+  .mobile-menu .family-sep { width: 100%; height: 1px; margin: 6px 0; }
+  .mobile-menu .role-toggle { margin: 8px 0 0; align-self: flex-start; }
+
+  /* ── PAGES ───────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* ── HERO ────────────────────────────────── */
+  .hero {
+    background: var(--blue);
+    color: white;
+    padding: 3.5rem 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: rgba(251,191,36,0.08);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -80px; left: 30%;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index:1; }
+  .hero h1 { font-size: clamp(26px, 4vw, 40px); font-weight: 800; margin-bottom: 12px; line-height: 1.2; }
+  .hero h1 span { color: var(--yellow); }
+  .hero p { font-size: 16px; opacity: 0.85; max-width: 540px; line-height: 1.7; margin-bottom: 1.5rem; }
+  .hero-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--yellow); color: var(--blue);
+    border: none; border-radius: 30px;
+    padding: 12px 28px; font-size: 15px; font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .hero-btn:hover { background: var(--yellow-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(251,191,36,0.4); }
+  .hero-emoji { position: absolute; right: 4%; top: 50%; transform: translateY(-50%); font-size: clamp(60px, 10vw, 110px); opacity: 0.18; user-select: none; }
+
+  /* ── SECTION HEADING ─────────────────────── */
+  .section-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .section-head h2 { font-size: 20px; font-weight: 700; color: var(--blue); }
+  .section-head-icon {
+    width: 36px; height: 36px; background: var(--yellow);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  /* ── GRID ────────────────────────────────── */
+  .grid { display: grid; gap: 16px; }
+  .grid-3 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+
+  /* ── VIDEO CARDS ─────────────────────────── */
+  .video-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    overflow: hidden; cursor: pointer;
+    transition: all 0.22s; box-shadow: var(--shadow);
+  }
+  .video-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
+  .video-thumb {
+    height: 140px; background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; font-size: 50px; overflow: hidden;
+  }
+  .video-thumb-emoji { z-index: 1; }
+  .video-thumb::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+  }
+  .play-circle {
+    position: absolute; bottom: 12px; right: 12px;
+    width: 44px; height: 44px;
+    background: var(--yellow); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; z-index: 2;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    transition: transform 0.18s;
+  }
+  .video-card:hover .play-circle { transform: scale(1.1); }
+  .video-body { padding: 14px; }
+  .video-title { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .video-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 10px; margin-bottom: 8px; }
+  .tag {
+    display: inline-block; border-radius: 20px;
+    padding: 3px 10px; font-size: 11px; font-weight: 700;
+  }
+  .tag-blue { background: #EFF6FF; color: var(--blue); }
+  .tag-yellow { background: #FEF3C7; color: #92400E; }
+  .tag-green { background: #ECFDF5; color: #065F46; }
+  .tag-purple { background: #F3F4FF; color: #4338CA; }
+
+  /* ── VIDEO PLAYER MODAL ──────────────────── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,20,50,0.75);
+    z-index: 500; align-items: center; justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #0f172a; border-radius: var(--radius);
+    width: 100%; max-width: 680px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-header {
+    background: var(--blue); padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-title { color: white; font-weight: 700; font-size: 15px; }
+  .modal-close {
+    background: rgba(255,255,255,0.1); border: none;
+    color: white; width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-player {
+    position: relative; padding-top: 56.25%;
+    background: #000;
+  }
+  .modal-player iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: none;
+  }
+  .modal-player .placeholder-screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6); gap: 12px;
+    font-size: 14px;
+  }
+  .placeholder-screen .big-play { font-size: 60px; }
+  .modal-footer {
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 10px;
+    background: #1e293b;
+  }
+  .ctrl-btn {
+    background: rgba(255,255,255,0.08); border: none;
+    color: white; border-radius: var(--radius-sm);
+    padding: 7px 14px; cursor: pointer; font-size: 13px;
+    font-family: 'Nunito', sans-serif; font-weight: 600;
+    transition: background 0.15s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.15); }
+  .safe-badge {
+    margin-left: auto; font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .safe-dot { width: 7px; height: 7px; background: #4ADE80; border-radius: 50%; }
+
+  /* ── GAME CARDS ──────────────────────────── */
+  .game-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 20px 16px; text-align: center;
+    cursor: pointer; transition: all 0.22s;
+    box-shadow: var(--shadow);
+  }
+  .game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--yellow); }
+  .game-icon-wrap {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: linear-gradient(135deg, var(--yellow-light), var(--yellow));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 12px;
+    box-shadow: 0 4px 16px rgba(251,191,36,0.35);
+  }
+  .game-name { font-weight: 800; font-size: 15px; color: var(--text); margin-bottom: 6px; }
+  .game-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+  .game-btn {
+    background: var(--yellow); color: var(--blue);
+    border: none; border-radius: 20px; padding: 8px 20px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    font-family: 'Nunito', sans-serif; width: 100%;
+    transition: all 0.18s;
+  }
+  .game-btn:hover { background: var(--yellow-light); transform: scale(1.03); }
+
+  /* ── EVENT CARDS ─────────────────────────── */
+  .event-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 16px; display: flex; gap: 14px; align-items: flex-start;
+    box-shadow: var(--shadow); transition: all 0.2s;
+  }
+  .event-card:hover { box-shadow: var(--shadow-lg); border-color: var(--blue); }
+  .event-date-box {
+    background: var(--blue); color: white;
+    border-radius: var(--radius-sm);
+    width: 52px; height: 52px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Baloo 2', sans-serif;
+  }
+  .event-date-box .day { font-size: 22px; font-weight: 800; line-height: 1; }
+  .event-date-box .month { font-size: 10px; font-weight: 600; opacity: 0.8; text-transform: uppercase; }
+  .event-info h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .event-info p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
+
+  /* ── FORUM ───────────────────────────────── */
+  .forum-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border); padding: 18px;
+    box-shadow: var(--shadow); transition: all 0.2s;
+  }
+  .forum-card:hover { box-shadow: var(--shadow-lg); }
+  .forum-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; flex-shrink: 0;
+  }
+  .forum-meta h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .forum-meta span { font-size: 12px; color: var(--text-muted); }
+  .forum-body { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
+  .forum-foot { display: flex; gap: 16px; flex-wrap: wrap; }
+  .forum-action {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    cursor: pointer; transition: color 0.15s; background: none; border: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .forum-action:hover { color: var(--blue); }
+  .new-topic-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue); color: white;
+    border: none; border-radius: 20px; padding: 10px 22px;
+    font-size: 14px; font-weight: 700;
+    font-family: 'Nunito', sans-serif; cursor: pointer;
+    margin-bottom: 1.5rem; transition: all 0.18s;
+  }
+  .new-topic-btn:hover { background: var(--blue-light); transform: translateY(-1px); }
+
+  /* ── EXPERT ──────────────────────────────── */
+  .expert-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border); padding: 20px;
+    box-shadow: var(--shadow); transition: all 0.2s;
+  }
+  .expert-card:hover { box-shadow: var(--shadow-lg); border-color: var(--blue); }
+  .expert-tags { margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .expert-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+  .expert-author { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .expert-excerpt { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .read-more {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 12px; color: var(--blue);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; background: none; border: none;
+    font-family: 'Nunito', sans-serif; transition: gap 0.15s;
+  }
+  .read-more:hover { gap: 8px; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .filter-btn {
+    border: 1.5px solid var(--border); background: var(--surface);
+    border-radius: 20px; padding: 6px 14px; font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: all 0.15s;
+    font-family: 'Nunito', sans-serif; color: var(--text-muted);
+  }
+  .filter-btn:hover, .filter-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+  /* ── LEGAL ───────────────────────────────── */
+  .legal-intro {
+    background: var(--blue); color: white;
+    border-radius: var(--radius); padding: 20px 24px; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .legal-intro-icon { font-size: 40px; flex-shrink: 0; }
+  .legal-intro h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .legal-intro p { font-size: 13px; opacity: 0.8; line-height: 1.6; }
+  .accordion {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1.5px solid var(--border); margin-bottom: 10px;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .acc-header {
+    padding: 16px 20px; display: flex;
+    justify-content: space-between; align-items: center;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .acc-header:hover { background: #F8FAFF; }
+  .acc-header-left { display: flex; align-items: center; gap: 12px; }
+  .acc-icon { width: 36px; height: 36px; background: var(--bg); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .acc-title { font-weight: 700; font-size: 14px; color: var(--text); }
+  .acc-arrow { font-size: 18px; color: var(--text-muted); transition: transform 0.25s; }
+  .accordion.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { display: none; padding: 0 20px 20px; border-top: 1.5px solid var(--border); }
+  .accordion.open .acc-body { display: block; }
+  .acc-body-inner { padding-top: 16px; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; }
+  .step-num {
+    width: 26px; height: 26px; background: var(--blue); color: white;
+    border-radius: 50%; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .step-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; padding-top: 3px; }
+  .tip-box {
+    background: #FEF3C7; border-radius: var(--radius-sm);
+    padding: 12px 16px; margin-top: 12px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .tip-box span { font-size: 13px; color: #92400E; line-height: 1.6; }
+
+  /* ── FAMILY BADGE ────────────────────────── */
+  .family-only-badge {
+    background: var(--yellow); color: var(--blue);
+    font-size: 11px; font-weight: 800;
+    padding: 3px 8px; border-radius: 20px;
+    margin-left: 8px;
+  }
+
+  /* ── FOOTER ──────────────────────────────── */
+  footer {
+    background: var(--blue-dark); color: rgba(255,255,255,0.6);
+    text-align: center; padding: 2rem 1rem; font-size: 13px; margin-top: 3rem;
+  }
+  footer strong { color: var(--yellow); }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .role-toggle { display: none; }
+    .hamburger { display: flex; align-items: center; }
+    .hero { padding: 2rem 1.25rem; }
+    .hero-emoji { display: none; }
+    .container { padding: 1.5rem 1rem; }
+  }
+
+  /* ── NOTIFICATION ────────────────────────── */
+  .notif {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--blue); color: white; padding: 10px 20px;
+    border-radius: 30px; font-size: 13px; font-weight: 600;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; white-space: nowrap;
+    box-shadow: var(--shadow-lg);
+  }
+  .notif.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="#" onclick="showPage('home'); return false;">
+      <div class="brand-logo">💙</div>
+      <span class="brand-name">Down<span>Köprü</span></span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link active" id="nl-videos" onclick="showPage('videos')">
+        <span class="nav-icon">🎬</span> Video Hub
+      </button>
+      <button class="nav-link" id="nl-highlights" onclick="showPage('highlights')">
+        <span class="nav-icon">⭐</span> Etkinlikler
+      </button>
+      <button class="nav-link" id="nl-games" onclick="showPage('games')">
+        <span class="nav-icon">🎮</span> Oyun Alanı
+      </button>
+      <div class="family-sep" id="familySep" style="display:none"></div>
+      <button class="nav-link" id="nl-forum" style="display:none" onclick="showPage('forum')">
+        <span class="nav-icon">💬</span> Forum
+      </button>
+      <button class="nav-link" id="nl-expert" style="display:none" onclick="showPage('expert')">
+        <span class="nav-icon">📚</span> Uzman
+      </button>
+      <button class="nav-link" id="nl-legal" style="display:none" onclick="showPage('legal')">
+        <span class="nav-icon">🛡️</span> Haklarım
+      </button>
+    </div>
+
+    <div class="role-toggle" id="roleToggle" onclick="toggleRole()">
+      <div class="role-dot" id="roleDot" style="background:var(--yellow)"></div>
+      <span class="role-text" id="roleText">Birey Modu</span>
+      <span style="font-size:14px; margin-left:2px;">🔄</span>
+    </div>
+
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menüyü aç/kapat">☰</button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="nav-link" onclick="showPage('videos'); closeMobile()">🎬 Video Hub</button>
+    <button class="nav-link" onclick="showPage('highlights'); closeMobile()">⭐ Etkinlikler</button>
+    <button class="nav-link" onclick="showPage('games'); closeMobile()">🎮 Oyun Alanı</button>
+    <div class="family-sep" id="mobileSep" style="display:none"></div>
+    <button class="nav-link" id="mob-forum" style="display:none" onclick="showPage('forum'); closeMobile()">💬 Forum</button>
+    <button class="nav-link" id="mob-expert" style="display:none" onclick="showPage('expert'); closeMobile()">📚 Uzman Görüşleri</button>
+    <button class="nav-link" id="mob-legal" style="display:none" onclick="showPage('legal'); closeMobile()">🛡️ Haklarım</button>
+    <div class="role-toggle" style="margin-top:12px" onclick="toggleRole(); closeMobile()">
+      <div class="role-dot" id="mobRoleDot" style="background:var(--yellow)"></div>
+      <span class="role-text" id="mobRoleText">Birey Modu</span>
+      <span style="font-size:13px; margin-left:2px;">🔄</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ PAGE: VIDEO HUB ═══════════════ -->
+<div class="page active" id="page-videos">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>🎬 Video <span>Hub</span></h1>
+      <p>Güvenli, reklamsız eğitim videoları. Sadece sana özel seçilmiş içerikler — YouTube yorumu yok, reklam yok!</p>
+      <button class="hero-btn" onclick="showNotif('Tüm videolar yükleniyor...')">Tüm Videoları Gör 🚀</button>
+    </div>
+    <div class="hero-emoji">🎥</div>
+  </div>
+
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-icon">✨</div>
+      <h2>Öne Çıkan Videolar</h2>
+    </div>
+    <div class="grid grid-3">
+
+      <div class="video-card" onclick="openPlayer('Alfabe ile Eğlence', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1E3A8A,#2348a8);">
+          <span class="video-thumb-emoji">🔤</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Alfabe ile Eğlence</div>
+          <div class="video-meta"><span>⏱ 8 dk</span><span>🎓 Eğitim</span></div>
+          <span class="tag tag-blue">Okul Öncesi</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Renkler ve Şekiller', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1a337a,#1e3a8a);">
+          <span class="video-thumb-emoji">🌈</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Renkler ve Şekiller</div>
+          <div class="video-meta"><span>⏱ 6 dk</span><span>🎨 Animasyon</span></div>
+          <span class="tag tag-yellow">Yaratıcılık</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Müzik Zamanı', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#243f99,#1e3a8a);">
+          <span class="video-thumb-emoji">🎵</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Müzik Zamanı</div>
+          <div class="video-meta"><span>⏱ 12 dk</span><span>🎹 Müzik</span></div>
+          <span class="tag tag-purple">Duyusal</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Sayıları Öğreniyorum', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1b3585,#2244a0);">
+          <span class="video-thumb-emoji">🔢</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Sayıları Öğreniyorum</div>
+          <div class="video-meta"><span>⏱ 10 dk</span><span>➕ Matematik</span></div>
+          <span class="tag tag-green">Matematik</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Hayvanlar Alemi', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1e3d8f,#264db0);">
+          <span class="video-thumb-emoji">🐘</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Hayvanlar Alemi</div>
+          <div class="video-meta"><span>⏱ 15 dk</span><span>🌿 Doğa</span></div>
+          <span class="tag tag-green">Fen Bilgisi</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Dans Edelim!', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#193480,#1e3a8a);">
+          <span class="video-thumb-emoji">💃</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Dans Edelim!</div>
+          <div class="video-meta"><span>⏱ 7 dk</span><span>🕺 Hareket</span></div>
+          <span class="tag tag-yellow">Fiziksel Gelişim</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Mevsimler', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1e3a8a,#1b3585);">
+          <span class="video-thumb-emoji">🍂</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Mevsimler</div>
+          <div class="video-meta"><span>⏱ 9 dk</span><span>☀️ Genel Kültür</span></div>
+          <span class="tag tag-blue">Çevre</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('İlk Kelimelerim', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#162d6e,#1e3a8a);">
+          <span class="video-thumb-emoji">🗣️</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">İlk Kelimelerim</div>
+          <div class="video-meta"><span>⏱ 11 dk</span><span>💬 Dil</span></div>
+          <span class="tag tag-purple">Konuşma</span>
+        </div>
+      </div>
+
+      <div class="video-card" onclick="openPlayer('Meyve ve Sebzeler', 'dQw4w9WgXcQ')">
+        <div class="video-thumb" style="background: linear-gradient(135deg,#1e3a8a,#243f99);">
+          <span class="video-thumb-emoji">🍎</span>
+          <div class="play-circle">▶</div>
+        </div>
+        <div class="video-body">
+          <div class="video-title">Meyve ve Sebzeler</div>
+          <div class="video-meta"><span>⏱ 8 dk</span><span>🥦 Beslenme</span></div>
+          <span class="tag tag-green">Sağlık</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: HIGHLIGHTS ═══════════════ -->
+<div class="page" id="page-highlights">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>⭐ Etkinlikler & <span>Haberler</span></h1>
+      <p>Yaklaşan etkinlikler, özel günler ve topluluk duyuruları bir arada.</p>
+    </div>
+    <div class="hero-emoji">📅</div>
+  </div>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-icon">📌</div>
+      <h2>Yaklaşan Etkinlikler</h2>
+    </div>
+    <div class="grid grid-2">
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">21</div><div class="month">Mar</div></div>
+        <div class="event-info">
+          <h3>Down Sendromu Farkındalık Günü</h3>
+          <p>Tüm Türkiye'de yürüyüşler ve farkındalık etkinlikleri. Renkli çorap günü!</p>
+          <span class="tag tag-yellow">🌍 Ulusal Etkinlik</span>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">15</div><div class="month">May</div></div>
+        <div class="event-info">
+          <h3>Ankara Resim Sergisi</h3>
+          <p>Özel bireylerin eserlerinin sergileneceği müzede buluşma. Herkese açık!</p>
+          <span class="tag tag-purple">🎨 Sanat & Kültür</span>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">02</div><div class="month">Haz</div></div>
+        <div class="event-info">
+          <h3>Aile Buluşmaları — Ankara</h3>
+          <p>Deneyim paylaşımı ve uzman konuşmalarıyla dolu bir gün.</p>
+          <span class="tag tag-blue">👨‍👩‍👧 Topluluk</span>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">10</div><div class="month">Haz</div></div>
+        <div class="event-info">
+          <h3>Yüzme Festivali</h3>
+          <p>Su sporları ve eğlence dolu bir gün. Tüm aileler davetli!</p>
+          <span class="tag tag-green">🏊 Spor</span>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">18</div><div class="month">Haz</div></div>
+        <div class="event-info">
+          <h3>Konuşma Terapisi Atölyesi</h3>
+          <p>Uzman terapistlerle ücretsiz grup seansları. Kayıt zorunludur.</p>
+          <span class="tag tag-purple">🗣️ Terapi</span>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-box"><div class="day">25</div><div class="month">Haz</div></div>
+        <div class="event-info">
+          <h3>Müzik ve Dans Şenliği</h3>
+          <p>Müzik terapisi ve dans gösterileriyle renkli bir şenlik.</p>
+          <span class="tag tag-yellow">🎵 Müzik</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: GAME ZONE ═══════════════ -->
+<div class="page" id="page-games">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>🎮 Oyun <span>Alanı</span></h1>
+      <p>Eğlenerek öğren! Rengarenk oyunlar bilişsel gelişimini destekler.</p>
+    </div>
+    <div class="hero-emoji">🕹️</div>
+  </div>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-icon">🎯</div>
+      <h2>Oyunlar</h2>
+    </div>
+    <div class="grid grid-4">
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🎨</div>
+        <div class="game-name">Renk Eşleştirme</div>
+        <div class="game-desc">Aynı renkleri bul ve eşleştir! Dikkat ve hafıza geliştirici.</div>
+        <button class="game-btn" onclick="showNotif('Renk Eşleştirme oyunu açılıyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🔢</div>
+        <div class="game-name">Sayı Macerası</div>
+        <div class="game-desc">1'den 20'ye sırayla say ve matematik sevgisi kazan!</div>
+        <button class="game-btn" onclick="showNotif('Sayı Macerası başlıyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🧩</div>
+        <div class="game-name">Yapboz</div>
+        <div class="game-desc">Parçaları birleştir, harika resmi tamamla!</div>
+        <button class="game-btn" onclick="showNotif('Yapboz hazırlanıyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🐾</div>
+        <div class="game-name">Hayvan Sesi</div>
+        <div class="game-desc">Hangi hayvan bu sesi çıkarıyor? Tahmin et!</div>
+        <button class="game-btn" onclick="showNotif('Hayvan Sesi oyunu yükleniyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🌈</div>
+        <div class="game-name">Boyama Sayfası</div>
+        <div class="game-desc">İstediğin renkle dijital boyama yap!</div>
+        <button class="game-btn" onclick="showNotif('Boyama sayfası açılıyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">⭐</div>
+        <div class="game-name">Kelime Bul</div>
+        <div class="game-desc">Harfleri birleştir, kelimeleri tamamla!</div>
+        <button class="game-btn" onclick="showNotif('Kelime Bul yükleniyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🎵</div>
+        <div class="game-name">Ritim Oyunu</div>
+        <div class="game-desc">Müzikle ritim tut ve eğlen!</div>
+        <button class="game-btn" onclick="showNotif('Ritim Oyunu açılıyor...')">Oyna ▶</button>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon-wrap">🍎</div>
+        <div class="game-name">Meyve Sepeti</div>
+        <div class="game-desc">Meyveleri tanı, doğru sepete koy!</div>
+        <button class="game-btn" onclick="showNotif('Meyve Sepeti hazırlanıyor...')">Oyna ▶</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: FORUM ═══════════════ -->
+<div class="page" id="page-forum">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>💬 Aile <span>Forumu</span> <span class="family-only-badge">Aileye Özel</span></h1>
+      <p>Deneyimlerinizi paylaşın, sorularınızı sorun, birlikte büyüyelim.</p>
+    </div>
+    <div class="hero-emoji">🤝</div>
+  </div>
+  <div class="container">
+    <button class="new-topic-btn" onclick="showNotif('Yeni konu oluşturma ekranı açılıyor...')">
+      ✏️ Yeni Konu Aç
+    </button>
+    <div class="section-head">
+      <div class="section-head-icon">🔥</div>
+      <h2>Popüler Konular</h2>
+    </div>
+    <div class="grid grid-2">
+
+      <div class="forum-card">
+        <div class="forum-head">
+          <div class="avatar" style="background:#EFF6FF;color:#1E3A8A;">AY</div>
+          <div class="forum-meta">
+            <h4>Ayşe Yılmaz</h4>
+            <span>2 saat önce • 12 yanıt</span>
+          </div>
+        </div>
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Okul Öncesi Eğitim Önerileri</p>
+        <div class="forum-body">Kızım 5 yaşında, hangi okul öncesi programları sizin için faydalı oldu? Konuşma terapisiyle birlikte nasıl ilerlettiniz?</div>
+        <div class="forum-foot">
+          <button class="forum-action">❤️ 24</button>
+          <button class="forum-action">💬 12 Yanıt</button>
+          <button class="forum-action">🔖 Kaydet</button>
+        </div>
+      </div>
+
+      <div class="forum-card">
+        <div class="forum-head">
+          <div class="avatar" style="background:#ECFDF5;color:#065F46;">MK</div>
+          <div class="forum-meta">
+            <h4>Mehmet Kaya</h4>
+            <span>1 gün önce • 8 yanıt</span>
+          </div>
+        </div>
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Belediye Yardımları Başvuru Deneyimim</p>
+        <div class="forum-body">Ankara Büyükşehir'e başvurdum. Süreç nasıl işliyor merak edenler için adım adım anlattım, umarım faydalı olur...</div>
+        <div class="forum-foot">
+          <button class="forum-action">❤️ 31</button>
+          <button class="forum-action">💬 8 Yanıt</button>
+          <button class="forum-action">🔖 Kaydet</button>
+        </div>
+      </div>
+
+      <div class="forum-card">
+        <div class="forum-head">
+          <div class="avatar" style="background:#F3F4FF;color:#4338CA;">ZD</div>
+          <div class="forum-meta">
+            <h4>Zeynep Demir</h4>
+            <span>2 gün önce • 19 yanıt</span>
+          </div>
+        </div>
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Ankara'da Özel Eğitim Kurumu Tavsiyesi?</p>
+        <div class="forum-body">Oğlum 8 yaşına geldi, ilkokul düzeyinde özel eğitime uygun, deneyimli bir kurum arıyoruz. Tavsiyeleriniz neler?</div>
+        <div class="forum-foot">
+          <button class="forum-action">❤️ 45</button>
+          <button class="forum-action">💬 19 Yanıt</button>
+          <button class="forum-action">🔖 Kaydet</button>
+        </div>
+      </div>
+
+      <div class="forum-card">
+        <div class="forum-head">
+          <div class="avatar" style="background:#FEF3C7;color:#92400E;">HA</div>
+          <div class="forum-meta">
+            <h4>Hülya Arslan</h4>
+            <span>3 gün önce • 5 yanıt</span>
+          </div>
+        </div>
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">SGK Bakım Aylığı İçin Belgeler</p>
+        <div class="forum-body">Bakıma muhtaçlık aylığı başvurusu için hangi belgeler gerekiyor, bilen var mı? e-Devlet üzerinden yapılabiliyor mu?</div>
+        <div class="forum-foot">
+          <button class="forum-action">❤️ 18</button>
+          <button class="forum-action">💬 5 Yanıt</button>
+          <button class="forum-action">🔖 Kaydet</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: EXPERT ═══════════════ -->
+<div class="page" id="page-expert">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>📚 Uzman <span>Görüşleri</span> <span class="family-only-badge">Aileye Özel</span></h1>
+      <p>Alanında uzman akademisyen ve terapistlerden güncel makaleler ve araştırmalar.</p>
+    </div>
+    <div class="hero-emoji">🔬</div>
+  </div>
+  <div class="container">
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterExpert(this)">Tümü</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Konuşma Terapisi</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Eğitim</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Beslenme</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Psikoloji</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Erken Müdahale</button>
+      <button class="filter-btn" onclick="filterExpert(this)">Motorik Gelişim</button>
+    </div>
+    <div class="grid grid-2">
+
+      <div class="expert-card">
+        <div class="expert-tags">
+          <span class="tag tag-blue">Konuşma Terapisi</span>
+          <span class="tag tag-yellow">Erken Müdahale</span>
+        </div>
+        <div class="expert-title">Erken Konuşma Terapisinin Down Sendromlu Çocuklarda Dil Gelişimine Etkisi</div>
+        <div class="expert-author">Doç. Dr. Seda Kaya • Hacettepe Üniversitesi • 2024</div>
+        <div class="expert-excerpt">3-6 yaş grubunda yoğun terapi alan çocukların dil gelişiminde istatistiksel olarak anlamlı ilerlemeler kaydettiği görülmektedir. Erken müdahalenin kritik önemi vurgulanmaktadır.</div>
+        <button class="read-more" onclick="showNotif('Makale tam metin açılıyor...')">Devamını Oku →</button>
+      </div>
+
+      <div class="expert-card">
+        <div class="expert-tags">
+          <span class="tag tag-green">Beslenme</span>
+        </div>
+        <div class="expert-title">Down Sendromlu Bireylerde Beslenme Yönetimi ve Sağlıklı Kilo Kontrolü</div>
+        <div class="expert-author">Dyt. Fatma Arslan • Türk Diyetisyenler Derneği • 2023</div>
+        <div class="expert-excerpt">Metabolizmanın özellikli yapısı dikkate alındığında, bireyselleştirilmiş beslenme planları hem kilo yönetiminde hem de genel sağlıkta önemli katkılar sağlamaktadır.</div>
+        <button class="read-more" onclick="showNotif('Makale tam metin açılıyor...')">Devamını Oku →</button>
+      </div>
+
+      <div class="expert-card">
+        <div class="expert-tags">
+          <span class="tag tag-purple">Psikoloji</span>
+          <span class="tag tag-blue">Eğitim</span>
+        </div>
+        <div class="expert-title">Kapsayıcı Eğitim Ortamlarında Down Sendromlu Öğrencilerin Sosyal Uyumu</div>
+        <div class="expert-author">Prof. Dr. Ali Öztürk • Ankara Üniversitesi • 2024</div>
+        <div class="expert-excerpt">Normal gelişim gösteren akranlarla bir arada eğitim, Down sendromlu bireylerin sosyal becerilerini ve özgüvenini anlamlı düzeyde artırmaktadır.</div>
+        <button class="read-more" onclick="showNotif('Makale tam metin açılıyor...')">Devamını Oku →</button>
+      </div>
+
+      <div class="expert-card">
+        <div class="expert-tags">
+          <span class="tag tag-green">Motorik Gelişim</span>
+          <span class="tag tag-yellow">Erken Müdahale</span>
+        </div>
+        <div class="expert-title">Fizyoterapi Destekli Motor Gelişim Programlarının Etkinliği</div>
+        <div class="expert-author">Uzm. Fzt. Cansu Erdoğan • İstanbul Fizik Tedavi Merkezi • 2023</div>
+        <div class="expert-excerpt">Yapılandırılmış fizyoterapi programları, 0-3 yaş döneminde uygulanan motor gelişim desteklerinin uzun vadeli yürüyüş kalitesini ve denge becerilerini iyileştirdiğini göstermektedir.</div>
+        <button class="read-more" onclick="showNotif('Makale tam metin açılıyor...')">Devamını Oku →</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: LEGAL ═══════════════ -->
+<div class="page" id="page-legal">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>🛡️ Hukuki Haklar & <span>Destek</span> <span class="family-only-badge">Aileye Özel</span></h1>
+      <p>Haklarınızı bilin, adım adım süreçleri takip edin. Hiçbir şeyi kaçırmayın.</p>
+    </div>
+    <div class="hero-emoji">⚖️</div>
+  </div>
+  <div class="container">
+
+    <div class="legal-intro">
+      <div class="legal-intro-icon">ℹ️</div>
+      <div>
+        <h3>Nasıl Kullanılır?</h3>
+        <p>Aşağıdaki başlıklara tıklayarak adım adım rehberlere ulaşabilirsiniz. Tüm bilgiler güncel mevzuata göre hazırlanmıştır.</p>
+      </div>
+    </div>
+
+    <div class="accordion" id="acc1">
+      <div class="acc-header" onclick="toggleAcc('acc1')">
+        <div class="acc-header-left">
+          <div class="acc-icon">🏥</div>
+          <span class="acc-title">Hastane Raporu Nasıl Alınır?</span>
+        </div>
+        <span class="acc-arrow">⌄</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Çocuğunuzun kayıtlı olduğu devlet hastanesinin Çocuk Nöroloji veya Tıbbi Genetik bölümüne başvurun.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Karyotip (genetik) raporunu yanınıza alarak "Sağlık Kurulu" için randevu talep edin.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Kuruldan onaylanan rapor, engelli kimlik kartı ve diğer haklardan yararlanmak için zorunludur.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Raporunuzu e-Devlet → "Engelli Sağlık Kurulu Raporu Sorgulama" bölümünden takip edebilirsiniz.</div></div>
+          <div class="tip-box"><span>💡 <strong>İpucu:</strong> MHRS (www.mhrs.gov.tr) veya 182 hattı üzerinden randevu alabilirsiniz.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" id="acc2">
+      <div class="acc-header" onclick="toggleAcc('acc2')">
+        <div class="acc-header-left">
+          <div class="acc-icon">🏛️</div>
+          <span class="acc-title">Belediye Yardımları Nelerdir?</span>
+        </div>
+        <span class="acc-arrow">⌄</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <div class="step"><div class="step-num">1</div><div class="step-text">İlçe belediyenizin Sosyal Yardım İşleri Müdürlüğü'ne "engelli bireye sahip aile" olarak başvurun.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Gıda yardımı, yakacak desteği ve teknik donanım (akülü tekerlekli sandalye vb.) talep edebilirsiniz.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Büyükşehir belediyeleri genellikle ücretsiz ulaşım kartı ve erken çocukluk desteği sunmaktadır.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Ankara Büyükşehir Belediyesi'nin "Engelsiz Yaşam" hattını arayarak mevcut destekleri öğrenebilirsiniz.</div></div>
+          <div class="tip-box"><span>💡 <strong>İpucu:</strong> Başvuruda engelli sağlık kurulu raporu, nüfus cüzdanı fotokopisi ve ikametgah belgesi istenecektir.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" id="acc3">
+      <div class="acc-header" onclick="toggleAcc('acc3')">
+        <div class="acc-header-left">
+          <div class="acc-icon">💰</div>
+          <span class="acc-title">Engelli Aylığı & SGK Hakları</span>
+        </div>
+        <span class="acc-arrow">⌄</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <div class="step"><div class="step-num">1</div><div class="step-text">%40 ve üzeri engel oranıyla Aile ve Sosyal Hizmetler Bakanlığı üzerinden aylık bağlanabilir.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">SGK'dan bakıma muhtaçlık aylığı için e-Devlet veya sosyal güvenlik merkezinden başvuru yapabilirsiniz.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Ebeveynlerden birinin "engelli çocuğu olan ebeveyn" indirimi sayesinde erken emekliliğe hakkı olabilir.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Engelli bireyin eriştiği sağlık hizmetleri ücretsiz veya indirimli sunulmaktadır; SGK'ya kayıtlı olmak yeterlidir.</div></div>
+          <div class="tip-box"><span>💡 <strong>İpucu:</strong> Aile ve Sosyal Hizmetler Bakanlığı ALO 182 hattını arayarak detaylı bilgi alabilirsiniz.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" id="acc4">
+      <div class="acc-header" onclick="toggleAcc('acc4')">
+        <div class="acc-header-left">
+          <div class="acc-icon">🎓</div>
+          <span class="acc-title">Eğitim Hakları & Özel Eğitim Desteği</span>
+        </div>
+        <span class="acc-arrow">⌄</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Özel Eğitim Değerlendirme Kurulu (ÖDEK) raporuyla çocuğunuz için uygun eğitim ortamı belirlenir.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">MEB bünyesindeki Özel Eğitim ve Rehabilitasyon Merkezleri ücretsiz ya da katkı payıyla hizmet vermektedir.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">İl Milli Eğitim Müdürlüğü'nden "Bireysel Eğitim Planı (BEP)" desteği talep edebilirsiniz.</div></div>
+          <div class="tip-box"><span>💡 <strong>İpucu:</strong> e-Okul ve MEBBİS sistemleri üzerinden okul kayıt ve destek işlemlerinizi takip edebilirsiniz.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ VIDEO PLAYER MODAL ═══════════════ -->
+<div class="modal-overlay" id="playerModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Video</span>
+      <button class="modal-close" onclick="closePlayer()" aria-label="Kapat">✕</button>
+    </div>
+    <div class="modal-player" id="modalPlayer">
+      <div class="placeholder-screen" id="placeholderScreen">
+        <div class="big-play">▶</div>
+        <span>Video yükleniyor...</span>
+        <span style="font-size:11px;opacity:0.6;">Güvenli platform — reklam yok, yorum yok</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="ctrl-btn" onclick="showNotif('Önceki video')">⏮ Önceki</button>
+      <button class="ctrl-btn" onclick="closePlayer()">⏹ Kapat</button>
+      <button class="ctrl-btn" onclick="showNotif('Sonraki video')">Sonraki ⏭</button>
+      <div class="safe-badge"><div class="safe-dot"></div> Güvenli İzleme</div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- FOOTER -->
+<footer>
+  <p>💙 <strong>DownKöprü</strong> — Down Sendromu Destek Platformu</p>
+  <p style="margin-top:6px;">Down Sendromu Derneği iş birliğiyle hazırlanmıştır • 2025</p>
+</footer>
+
+<script>
+  // ── STATE ──────────────────────────────────────────
+  let isFamily = false;
+  let currentPage = 'videos';
+  let notifTimer = null;
+
+  // ── PAGE NAVIGATION ────────────────────────────────
+  function showPage(name) {
+    // Family-only guard
+    const familyPages = ['forum','expert','legal'];
+    if (familyPages.includes(name) && !isFamily) {
+      showNotif('Bu bölüm yalnızca aileler için. Aile moduna geçin! 👨‍👩‍👧');
+      return;
+    }
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    currentPage = name;
+    // Update nav highlights
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.getElementById('nl-' + name);
+    if (activeBtn) activeBtn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── ROLE TOGGLE ────────────────────────────────────
+  function toggleRole() {
+    isFamily = !isFamily;
+    const label = isFamily ? 'Aile Modu' : 'Birey Modu';
+    const color = isFamily ? '#4ADE80' : 'var(--yellow)';
+    document.getElementById('roleText').textContent = label;
+    document.getElementById('roleDot').style.background = color;
+    document.getElementById('mobRoleText').textContent = label;
+    document.getElementById('mobRoleDot').style.background = color;
+
+    const familyEls = ['nl-forum','nl-expert','nl-legal','mob-forum','mob-expert','mob-legal'];
+    const seps = ['familySep','mobileSep'];
+    familyEls.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isFamily ? '' : 'none';
+    });
+    seps.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isFamily ? '' : 'none';
+    });
+
+    // Redirect if on family-only page
+    if (!isFamily && ['forum','expert','legal'].includes(currentPage)) {
+      showPage('videos');
+    }
+    showNotif(isFamily ? '👨‍👩‍👧 Aile moduna geçildi!' : '🌟 Birey moduna geçildi!');
+  }
+
+  // ── MOBILE MENU ────────────────────────────────────
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('open');
+  }
+  function closeMobile() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // ── VIDEO PLAYER ───────────────────────────────────
+  function openPlayer(title, videoId) {
+    document.getElementById('modalTitle').textContent = title;
+    const player = document.getElementById('modalPlayer');
+    // Clear previous content
+    player.innerHTML = '';
+    if (videoId) {
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + videoId + '?rel=0&autoplay=1&modestbranding=1';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      player.appendChild(iframe);
+    } else {
+      player.innerHTML = '<div class="placeholder-screen"><div class="big-play">▶</div><span>Video yükleniyor...</span></div>';
+    }
+    document.getElementById('playerModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePlayer() {
+    document.getElementById('playerModal').classList.remove('open');
+    document.getElementById('modalPlayer').innerHTML = '<div class="placeholder-screen"><div class="big-play">▶</div><span>Video yükleniyor...</span></div>';
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('playerModal')) closePlayer();
+  }
+
+  // ── ACCORDION ──────────────────────────────────────
+  function toggleAcc(id) {
+    const acc = document.getElementById(id);
+    const wasOpen = acc.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.accordion').forEach(a => a.classList.remove('open'));
+    if (!wasOpen) acc.classList.add('open');
+  }
+
+  // ── EXPERT FILTER ──────────────────────────────────
+  function filterExpert(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showNotif('Filtre: ' + btn.textContent + ' uygulandı');
+  }
+
+  // ── NOTIFICATION ───────────────────────────────────
+  function showNotif(msg) {
+    const el = document.getElementById('notif');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(notifTimer);
+    notifTimer = setTimeout(() => el.classList.remove('show'), 2500);
+  }
+
+  // ── KEYBOARD: ESC closes modal ──────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePlayer();
+  });
+</script>
+</body>
+</html>
